@@ -1,1 +1,3 @@
-﻿
+﻿  main.cpp
+C:\Users\Sergey\source\repos\mp-lab6-text\main.cpp(4,13): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
+  TText.vcxproj -> C:\Users\Sergey\source\repos\mp-lab6-text\sln\x64\Debug\TText.exe
