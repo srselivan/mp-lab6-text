@@ -70,6 +70,10 @@ public:
 		return NULL;
 	}
 
+	bool IsEmpty() {
+		return pFirst == NULL;
+	}
+
 	~TStack(){
 		while (pFirst != NULL)
 		{

@@ -10,6 +10,12 @@ class TText {
 public:
 	TText() : pFirst(NULL), pCurr(NULL) {}
 
+	TText(TNode*p) : pFirst(p) {}
+
+	/*TText* Copy() {
+		return new TText();
+	}*/
+
 	void GoNextLine() {
 		if (pCurr) {
 			st.Push(pCurr);
@@ -36,11 +42,20 @@ public:
 		st.Clear();
 	}
 
+	void InsFirst(char str[]) {
+		TNode* n = new TNode(str);
+		pFirst = n;
+		pCurr = pFirst;
+	}
+
 	void InsNextLine(char str[]) {
 		if (pCurr) {
 			TNode* n = new TNode(str);
 			n->pNext = pCurr->pNext;
 			pCurr->pNext = n;
+		}
+		if (!pFirst) {
+			InsFirst(str);
 		}
 	}
 
@@ -50,6 +65,9 @@ public:
 			n->pDown = pCurr->pNext;
 			pCurr->pNext = n;
 		}
+		if (!pFirst) {
+			InsFirst(str);
+		}
 	}
 
 	void InsDownLine(char str[]) {
@@ -58,6 +76,9 @@ public:
 			n->pNext = pCurr->pDown;
 			pCurr->pDown = n;
 		}
+		if (!pFirst) {
+			InsFirst(str);
+		}
 	}
 
 	void InsDownSection(char str[]) {
@@ -65,6 +86,9 @@ public:
 			TNode* n = new TNode(str);
 			n->pDown  = pCurr->pDown;
 			pCurr->pDown = n;
+		}
+		if (!pFirst) {
+			InsFirst(str);
 		}
 	}
 
@@ -130,6 +154,47 @@ public:
 
 	void Print() {
 		PrintRec(pFirst);
+	}
+
+	void Reset() {
+		st.Clear();
+		if (pCurr) {
+			pCurr = pFirst;
+			st.Push(pCurr);
+			if (pCurr->pNext) {
+				st.Push(pCurr->pNext);
+			}
+			if (pCurr->pDown) {
+				st.Push(pCurr->pDown);
+			}
+		}
+	}
+
+	void GoNext() {
+		pCurr = st.Pop();
+		if (pCurr != pFirst) {
+			if (pCurr->pNext) {
+				st.Push(pCurr->pNext);
+			}
+			if (pCurr->pDown) {
+				st.Push(pCurr->pDown);
+			}
+		}
+	}
+
+	bool IsEnd() {
+		return st.IsEmpty();
+	}
+
+	void SetFlag() {
+		pCurr->flag = true;
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, TText& text) {
+		for (text.Reset(); !text.IsEnd(); text.GoNext()) {
+			os << text.pCurr->str << std::endl;
+		}
+		return os;
 	}
 
 };
