@@ -1,7 +1,8 @@
 #pragma once
-#include "TNode.h"
 #include "TStack.h"
+#include "TNode.h"
 #include <fstream>
+
 
 class TText {
 	TNode* pFirst, * pCurr;
@@ -10,7 +11,7 @@ class TText {
 public:
 	TText() : pFirst(NULL), pCurr(NULL) {}
 
-	TText(TNode*p) : pFirst(p) {}
+	//TText(TNode*p) : pFirst(p), pCurr(NULL){}
 
 	/*TText* Copy() {
 		return new TText();
@@ -147,7 +148,12 @@ public:
 	void PrintRec(TNode* p) {
 		if (p) {
 			std::cout << p->str << std::endl;
-			PrintRec(p->pDown);
+			if (p->pDown)
+			{
+				std::cout << "{\n";
+				PrintRec(p->pDown);
+				std::cout << "}\n";
+			}
 			PrintRec(p->pNext);
 		}
 	}

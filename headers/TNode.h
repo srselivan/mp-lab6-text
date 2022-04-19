@@ -1,8 +1,7 @@
 #pragma once
 #include <iostream>
-#include <string>
-#include "TMem.h"
-#include "TText.h"
+//#include <string>
+//#include "TText.h"
 
 // Node( pNext | pDown | str )
 //		 |		 |
@@ -10,6 +9,13 @@
 //		 |		 -------> Node at lower level
 //		 v
 // Node at same level
+
+struct TNode;
+class TText;
+
+struct TMem {
+	TNode* pFirst, * pFree, * pLast;
+};
 
 struct TNode {
 	char str[81];
@@ -26,6 +32,7 @@ struct TNode {
 		else {
 			strcpy_s(str, _str);
 		}
+		flag = false;
 	}
 
 	void* operator new (size_t size) {
@@ -47,7 +54,8 @@ struct TNode {
 
 	static void InitMem(int s = 100) {
 		mem.pFirst = (TNode*) new char[sizeof(TNode) * s];
-		mem.pFree = mem.pFirst + (s - 1);
+		mem.pFree = mem.pFirst;
+		mem.pLast = mem.pFirst + s - 1;
 		// setting pointers
 		TNode* p;
 		p = mem.pFirst;
@@ -60,7 +68,7 @@ struct TNode {
 		mem.pLast->pNext = NULL;
 	}
 
-	static void CleanMem(TText& txt) {
+	static void CleanMem(TText& txt); /*{
 		TNode* p = mem.pFree;
 		while (p) {
 			p->flag = true;
@@ -79,7 +87,7 @@ struct TNode {
 			}
 			p++;
 		}
-	}
+	}*/
 
 	/*static void PaintFree() {
 

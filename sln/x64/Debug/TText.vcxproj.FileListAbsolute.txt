@@ -1,0 +1,2 @@
+C:\Users\temp110\Desktop\git\mp-lab6-text\sln\x64\Debug\TText.exe
+C:\Users\temp110\Desktop\git\mp-lab6-text\sln\x64\Debug\TText.pdb
