@@ -8,24 +8,99 @@ class TText {
 	TNode* pFirst, * pCurr;
 	TStack<TNode*> st;
 
+	void PrintTab(int count) {
+		while (count--)	std::cout << "	";
+	}
+	void PrintCurr(const TNode* p) {
+		if (p == pCurr)	std::cout << ">";
+	}
+
+	TNode* CopyNode(TNode* p) {
+		TNode* pN = NULL, * pD = NULL;
+		if (p->pNext) pN = CopyNode(p->pNext);
+		if (p->pDown) pD = CopyNode(p->pDown);
+		TNode* result;
+		result = new TNode(p->str, pN, pD);
+		return result;
+	}
+
+	TNode* ReadRec(std::ifstream& ifs) {
+		TNode* pHead = NULL, * tmp = NULL;
+		char buf[81];
+
+		while (!ifs.eof()) {
+			ifs.getline(buf, 80, '\n');
+			if (buf[0] == '}') {
+				break;
+			}
+			else if (buf[0] == '{') {
+				tmp->pDown = ReadRec(ifs);
+			}
+			else {
+				TNode* p = new TNode(buf);
+				if (pHead == NULL) {
+					pHead = tmp = p;
+				}
+				else {
+					tmp->pNext = p;
+					tmp = p;
+				}
+			}
+		}
+
+		return pHead;
+	}
+
+	void PrintRec(TNode* p, int countTab) {
+		if (p) {
+			PrintTab(countTab);
+			PrintCurr(p);
+			std::cout << p->str << std::endl;
+			if (p->pDown)
+			{
+				PrintTab(++countTab);
+				std::cout << "{\n";
+
+				PrintRec(p->pDown, countTab);
+
+				PrintTab(countTab--);
+				std::cout << "}\n";
+			}
+			PrintRec(p->pNext, countTab);
+		}
+	}
+
+	void FPrintRec(TNode* p, std::ofstream& ofs) {
+		if (p) {
+			ofs << p->str << std::endl;
+			if (p->pDown)
+			{
+				ofs << "{\n";
+				FPrintRec(p->pDown, ofs);
+				ofs << "}\n";
+			}
+			FPrintRec(p->pNext, ofs);
+		}
+	}
+
 public:
 	TText() : pFirst(NULL), pCurr(NULL) {}
 
-	//TText(TNode*p) : pFirst(p), pCurr(NULL){}
+	TText(TNode*p) : pFirst(p), pCurr(NULL){}
 
-	/*TText* Copy() {
-		return new TText();
-	}*/
+	TText* Copy() {
+		return new TText(CopyNode(pFirst));
+	}
 
 	void GoNextLine() {
-		if (pCurr) {
+		if (pCurr && pCurr->pNext) {
 			st.Push(pCurr);
 			pCurr = pCurr->pNext;
 		}
 	}
 
 	void GoDownLine() {
-		if (pCurr) {
+		if (pCurr && pCurr->pDown) {
 			st.Push(pCurr);
 			pCurr = pCurr->pDown;
 		}
@@ -113,60 +188,25 @@ public:
 		}
 	}
 
-	TNode* ReadRec(std::ifstream& ifs) {
-		TNode* pHead, * tmp;
-		char buf[81];
-
-		while (!ifs.eof()) {
-			ifs.getline(buf, 80, '\n');
-			if (buf[0] == '}') {
-				break;
-			}
-			else if (buf[0] == '{') {
-				tmp->pDown = ReadRec(ifs);
-			}
-			else {
-				TNode* p = new TNode(buf);
-				if (pHead == NULL) {
-					pHead = tmp = p;
-				}
-				else {
-					tmp->pNext = p;
-					tmp = p;
-				}
-			}
-		}
-
-		return pHead;
-	}
-
 	void Read(char* fn) {
 		std::ifstream ifs(fn);
 		pFirst = ReadRec(ifs);
 	}
 
-	void PrintRec(TNode* p) {
-		if (p) {
-			std::cout << p->str << std::endl;
-			if (p->pDown)
-			{
-				std::cout << "{\n";
-				PrintRec(p->pDown);
-				std::cout << "}\n";
-			}
-			PrintRec(p->pNext);
-		}
+	void Print() {
+		int countTab = 0;
+		PrintRec(pFirst, countTab);
 	}
 
-	void Print() {
-		PrintRec(pFirst);
+	void FPrint(std::ofstream& ofs) {
+		FPrintRec(pFirst, ofs);
 	}
 
 	void Reset() {
 		st.Clear();
+		pCurr = pFirst;
+		st.Push(pCurr);
 		if (pCurr) {
-			pCurr = pFirst;
-			st.Push(pCurr);
 			if (pCurr->pNext) {
 				st.Push(pCurr->pNext);
 			}
@@ -178,7 +218,7 @@ public:
 
 	void GoNext() {
 		pCurr = st.Pop();
-		if (pCurr != pFirst) {
+		if (pCurr != pFirst && pCurr) {
 			if (pCurr->pNext) {
 				st.Push(pCurr->pNext);
 			}

@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\main.cpp" />
-    <ClCompile Include="TNode.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\headers\TNode.h" />
     <ClInclude Include="..\headers\TStack.h" />
     <ClInclude Include="..\headers\TText.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\cpp\main.cpp" />
+    <ClCompile Include="..\cpp\TNode.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
